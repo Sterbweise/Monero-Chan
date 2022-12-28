@@ -121,7 +121,7 @@ async def on_message(message):
 @bot.hybrid_command(name = "link", with_app_command = True, description = "Link usefull for Monero information")
 async def link(ctx: commands.Context):
     await ctx.defer(ephemeral = True)
-    await ctx.reply("hi!")
+    await ctx.reply("Hi!")
 
 @bot.hybrid_command(name="info", with_app_command=True, desciption="Information of Monero")
 async def info(ctx):
