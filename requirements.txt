@@ -1,0 +1,9 @@
+discord
+glob2
+random2
+os-sys
+asyncio
+jsons
+requests
+numpy
+pycoingecko

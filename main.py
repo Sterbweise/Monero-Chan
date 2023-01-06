@@ -32,6 +32,7 @@ rules = f"""
         - `/list` Displays the list of `params`.
         - `/list params` Displays the values of `params`.
         - `/list args` Displays all usable arguments.
+        - `/show params` Displays the values of `params`.
         - `/config params args` To modify the bot's configuration.
 
         **For actions on messages:**
@@ -97,8 +98,6 @@ async def on_member_join(member):
         file = discord.File(images)
         ri = images.split('/')
         embed.set_image(url=(f"attachment://{ri[-1]}"))
-        #embed.set_thumbnail(url=bot.user.avatar.url)
-        #embed.set_author(name=bot.user.name, icon_url=bot.user.avatar.url)
         await member.send(file=file, embed=embed)
     except:
         print("Error send private")
@@ -121,7 +120,93 @@ async def on_message(message):
 @bot.hybrid_command(name = "link", with_app_command = True, description = "Link usefull for Monero information")
 async def link(ctx: commands.Context):
     await ctx.defer(ephemeral = True)
-    await ctx.reply("Hi!")
+    await ctx.reply("Information was send in your DM.")
+    embed=discord.Embed(title=f"Hello {member.name} !", 
+    description=rules, 
+    color=0xFF5733
+    )
+    images = "./src/pictures/monero-chan/19.webp"
+    file = discord.File(images)
+    ri = images.split('/')
+    embed.set_thumbnail(url=ctx.user.avatar.url)
+    embed.set_image(url=(f"attachment://{ri[-1]}"))
+    await ctx.member.send(file=file, embed=embed)
+
+@bot.hybrid_command(name = "list", with_app_command = True, description = "List commands")
+async def list(ctx: commands.Context, options=None):
+    params = '''
+    **List of parameters:**
+        - welcome <boolean> : Welcome message for joining member
+        - react_on_message <String[]> : Auto reply when member say "Monero-chan"
+        - playlist_song <String[]> : Selection of playlist
+    '''
+    args = '''
+    **List of arguments:**
+    Boolean Parameter:
+        - Enable (1)
+        - Disable (0)
+    
+    String[] Parameter:
+        - Add (add) ***'config react_on_message add "your sentence"'***
+        - Delete (del) ***'config react_on_message del setence_number'***
+    
+    String Parameter:
+        - Modify (mod) ***'config string mod "your sentence"'***
+    '''
+
+    info = '''
+    - To display list of parameters "/list params"
+    - To display list of arguments "/list args"
+    '''
+    await ctx.defer(ephemeral = True)
+    if (options is None):
+        embed=discord.Embed(title=f"Invalide arguments...", 
+        description=info, 
+        color=0xFF5733
+        )
+        images = "./src/pictures/monero-chan/19.webp"
+        file = discord.File(images)
+        ri = images.split('/')
+        embed.set_image(url=(f"attachment://{ri[-1]}"))
+        await ctx.reply(file=file, embed=embed)
+
+    elif (options is "params"):
+        embed=discord.Embed(title=f"List of parameters", 
+        description=params, 
+        color=0xFF5733
+        )
+        images = "./src/pictures/monero-chan/14.webp"
+        file = discord.File(images)
+        ri = images.split('/')
+        embed.set_image(url=(f"attachment://{ri[-1]}"))
+        await ctx.reply(file=file, embed=embed)
+
+    elif (options is "args"):
+        embed=discord.Embed(title=f"List of arguments", 
+        description=args, 
+        color=0xFF5733
+        )
+        images = "./src/pictures/monero-chan/14.webp"
+        file = discord.File(images)
+        ri = images.split('/')
+        embed.set_image(url=(f"attachment://{ri[-1]}"))
+        await ctx.reply(file=file, embed=embed)
+
+@bot.hybrid_command(name = "show", with_app_command = True, description = "Show element")
+async def show(ctx: commands.Context, parameters=None):
+    with open(f"servers/{message.guild.id}/config.json") as config:
+        config_json = json.load(config)
+        config.close()
+    embed=discord.Embed(title=parameters, 
+    description=f"**Value:**\n{config_json[parameters]}", 
+    color=0xFF5733
+    )
+    images = "./src/pictures/monero-chan/21.webp"
+    file = discord.File(images)
+    ri = images.split('/')
+    embed.set_image(url=(f"attachment://{ri[-1]}"))
+    await ctx.defer(ephemeral = True)
+    await ctx.reply(file=file, embed=embed)
 
 @bot.hybrid_command(name="info", with_app_command=True, desciption="Information of Monero")
 async def info(ctx):
