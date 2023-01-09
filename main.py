@@ -121,24 +121,20 @@ async def on_message(message):
 async def link(ctx: commands.Context):
     await ctx.defer(ephemeral = True)
     await ctx.reply("Information was send in your DM.")
-    embed=discord.Embed(title=f"Hello {member.name} !", 
-    description=rules, 
+    embed=discord.Embed(title=f"Hello {ctx.author.name} !", 
+    description=rules,
     color=0xFF5733
     )
-    images = "./src/pictures/monero-chan/19.webp"
-    file = discord.File(images)
-    ri = images.split('/')
-    embed.set_thumbnail(url=ctx.user.avatar.url)
-    embed.set_image(url=(f"attachment://{ri[-1]}"))
-    await ctx.member.send(file=file, embed=embed)
+    embed.set_image(url="https://s3.gifyu.com/images/lofi_monerochan.gif")
+    await ctx.author.send(embed=embed)
 
-@bot.hybrid_command(name = "list", with_app_command = True, description = "List commands")
-async def list(ctx: commands.Context, options=None):
+@bot.hybrid_command(name = "show", with_app_command = True, description = "List commands")
+async def show(ctx: commands.Context, var=None):
     params = '''
     **List of parameters:**
-        - welcome <boolean> : Welcome message for joining member
-        - react_on_message <String[]> : Auto reply when member say "Monero-chan"
-        - playlist_song <String[]> : Selection of playlist
+        - **welcome** <boolean> : *Welcome message for joining member*
+        - **react_on_message** <String[]> : *Auto reply when member say "Monero-chan"*
+        - **playlist_song** <String[]> : *Selection of playlist*
     '''
     args = '''
     **List of arguments:**
@@ -147,19 +143,20 @@ async def list(ctx: commands.Context, options=None):
         - Disable (0)
     
     String[] Parameter:
-        - Add (add) ***'config react_on_message add "your sentence"'***
-        - Delete (del) ***'config react_on_message del setence_number'***
+        - Add (add) *`config react_on_message add "your sentence"`*
+        - Delete (del) *`config react_on_message del setence_number'*
     
     String Parameter:
-        - Modify (mod) ***'config string mod "your sentence"'***
+        - Modify (mod) *`config string mod "your sentence"`*
     '''
 
     info = '''
-    - To display list of parameters "/list params"
-    - To display list of arguments "/list args"
+    - To display list of parameters `/show params`
+    - To display list of arguments `/show args`
+    - To display value of the parameter `/show <parameter>`
     '''
     await ctx.defer(ephemeral = True)
-    if (options is None):
+    if (var == None):
         embed=discord.Embed(title=f"Invalide arguments...", 
         description=info, 
         color=0xFF5733
@@ -170,7 +167,7 @@ async def list(ctx: commands.Context, options=None):
         embed.set_image(url=(f"attachment://{ri[-1]}"))
         await ctx.reply(file=file, embed=embed)
 
-    elif (options is "params"):
+    elif (var == "params"):
         embed=discord.Embed(title=f"List of parameters", 
         description=params, 
         color=0xFF5733
@@ -181,9 +178,9 @@ async def list(ctx: commands.Context, options=None):
         embed.set_image(url=(f"attachment://{ri[-1]}"))
         await ctx.reply(file=file, embed=embed)
 
-    elif (options is "args"):
+    elif (var == "args"):
         embed=discord.Embed(title=f"List of arguments", 
-        description=args, 
+        description=args,
         color=0xFF5733
         )
         images = "./src/pictures/monero-chan/14.webp"
@@ -191,22 +188,32 @@ async def list(ctx: commands.Context, options=None):
         ri = images.split('/')
         embed.set_image(url=(f"attachment://{ri[-1]}"))
         await ctx.reply(file=file, embed=embed)
+    else :
+        with open(f"servers/{ctx.guild.id}/config.json") as config:
+            config_json = json.load(config)
+            config.close()
+        if (var in config_json):
+            embed=discord.Embed(title=parameters, 
+            description=f"**Value:**\n{config_json[parameters]}", 
+            color=0xFF5733,
+        type="rich"
+            )
+            images = "./src/pictures/monero-chan/21.webp"
+            file = discord.File(images)
+            ri = images.split('/')
+            embed.set_image(url=(f"attachment://{ri[-1]}"))
+        else :
+            embed=discord.Embed(title=f"Invalide arguments...", 
+            description=info, 
+            color=0xFF5733
+            )
+            images = "./src/pictures/monero-chan/19.webp"
+            file = discord.File(images)
+            ri = images.split('/')
+            embed.set_image(url=(f"attachment://{ri[-1]}"))
+            embed.set_image(url="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif")
+            await ctx.reply(file=file, embed=embed)
 
-@bot.hybrid_command(name = "show", with_app_command = True, description = "Show element")
-async def show(ctx: commands.Context, parameters=None):
-    with open(f"servers/{message.guild.id}/config.json") as config:
-        config_json = json.load(config)
-        config.close()
-    embed=discord.Embed(title=parameters, 
-    description=f"**Value:**\n{config_json[parameters]}", 
-    color=0xFF5733
-    )
-    images = "./src/pictures/monero-chan/21.webp"
-    file = discord.File(images)
-    ri = images.split('/')
-    embed.set_image(url=(f"attachment://{ri[-1]}"))
-    await ctx.defer(ephemeral = True)
-    await ctx.reply(file=file, embed=embed)
 
 @bot.hybrid_command(name="info", with_app_command=True, desciption="Information of Monero")
 async def info(ctx):
